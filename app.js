@@ -31,7 +31,11 @@ const main = async () => {
     { key: 'examples', options: { limit: options['max-examples'] || -1 } },
   ];
 
-  const glossary = await Promise.all(sourceWordList.map(async word => {
+
+  let progress = 0;
+  const glossary = [];
+
+  for (const word of sourceWordList) {
 
     try {
       const fetchedData = await Promise.all(methods.map(method => {
@@ -52,17 +56,20 @@ const main = async () => {
         }
       }, { word });
 
-      return glossaryRecord;
-  } catch (err) {
-    console.error(`Error while processing word: ${word}`);
-    return null;
+      
+      glossary.push(glossaryRecord);
+
+      progress++;
+      console.log(`${progress} of ${sourceWordList.length} word(-s) processed`);
+
+    } catch (err) {
+      console.error(`Error while processing word: ${word}`);
+    }
+
   }
 
 
-  }));
-
   await crawler.done();
-
 
   loader.toExcel(glossary, options.output);
 
