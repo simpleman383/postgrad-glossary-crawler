@@ -1,0 +1,22 @@
+{
+  "name": "glossary-crawler",
+  "version": "1.0.0",
+  "description": "Web crawler for glossary data fetching (test project)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js --dict words.txt"
+  },
+  "keywords": [
+    "web",
+    "crawler",
+    "english",
+    "translations"
+  ],
+  "author": "simpleman383",
+  "license": "ISC",
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "excel4node": "^1.7.2",
+    "puppeteer": "^3.0.4"
+  }
+}
