@@ -1,7 +1,7 @@
 # postgrad-glossary-crawler
 
 ## установка
-npm -i 
+npm i 
 
 ## запуск
 
