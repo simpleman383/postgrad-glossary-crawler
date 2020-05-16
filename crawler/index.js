@@ -10,17 +10,23 @@ const glossaryCrawler = async function({ headless = true } = {}) {
     GERUND: { key: 'gerund', shortcuts: [ 'прич' ], },
   };
 
-  const browser = await puppeteer.launch({ headless });
+  const browser = await puppeteer.launch({ headless: false });
 
 
   const fetchTranscription = async function(word) {
     const baseAPI = `https://dictionary.cambridge.org/dictionary/english`;
-    const posSelector = '.uk .pron';
+    const posSelector = '.pron';
 
     const page = await browser.newPage();
     await page.goto(`${baseAPI}/${word}`);
 
-    await page.waitForSelector(posSelector);
+    try {
+      await page.waitForSelector(posSelector);
+    } catch (err) {
+      console.error(`failed to fetchTranscription for ${word}`);
+      return "";
+    }
+
 
     const domElements = await page.$(posSelector);
     const text = await domElements.evaluate(element => element.innerText);
@@ -42,7 +48,12 @@ const glossaryCrawler = async function({ headless = true } = {}) {
     const page = await browser.newPage();
     await page.goto(`${baseAPI}/${word}`);
 
-    await page.waitForSelector(posSelector);
+    try {
+      await page.waitForSelector(posSelector);
+    } catch (err) {
+      console.error(`failed to fetchSynonyms for ${word}`);
+      return "";
+    }
 
     const domElements = await page.$$(posSelector);
     const synonyms = await Promise.all(domElements.map(element => {
@@ -57,12 +68,18 @@ const glossaryCrawler = async function({ headless = true } = {}) {
 
   const fetchPartOfSpeech = async function(word) {
     const baseAPI = `https://dictionary.cambridge.org/dictionary/english`;
-    const posSelector = '.posgram .pos';
+    const posSelector = '.pos';
 
     const page = await browser.newPage();
     await page.goto(`${baseAPI}/${word}`);
 
-    await page.waitForSelector(posSelector);
+
+    try {
+      await page.waitForSelector(posSelector);
+    } catch (err) {
+      console.error(`failed to fetchPartOfSpeech for ${word}`);
+      return "";
+    }
 
     const domElement = await page.$(posSelector);
 
@@ -75,12 +92,18 @@ const glossaryCrawler = async function({ headless = true } = {}) {
 
   const fetchMeanings = async function(word, options) {
     const baseAPI = `https://context.reverso.net/translation/english-russian`;
-    const posSelector = '#translations-content > a.translation';
+    const posSelector = '#translations-content > .translation';
 
     const page = await browser.newPage();
     await page.goto(`${baseAPI}/${word}`);
 
-    await page.waitForSelector(posSelector);
+    
+    try {
+      await page.waitForSelector(posSelector);
+    } catch (err) {
+      console.error(`failed to fetchMeanings for ${word}`);
+      return [];
+    }
 
     const domElements = await page.$$(posSelector);
     const meanings = (await Promise.all(domElements.map(element => {
@@ -100,7 +123,13 @@ const glossaryCrawler = async function({ headless = true } = {}) {
     const page = await browser.newPage();
     await page.goto(`${baseAPI}/${word}`);
 
-    await page.waitForSelector(posSelector);
+
+    try {
+      await page.waitForSelector(posSelector);
+    } catch (err) {
+      console.error(`failed to fetchExamples for ${word}`);
+      return [];
+    }
 
     const domElements = await page.$$(posSelector);
     const examples = await Promise.all(domElements.map(element => {
@@ -120,7 +149,13 @@ const glossaryCrawler = async function({ headless = true } = {}) {
     const page = await browser.newPage();
     await page.goto(`${baseAPI}/${word}`);
 
-    await page.waitForSelector(selector);
+    try {
+      await page.waitForSelector(selector);
+    } catch (err) {
+      console.error(`failed to fetchDefinitions for ${word}`);
+      return [];
+    }
+
 
     const definitionBlocks = await page.$$(selector);
 
