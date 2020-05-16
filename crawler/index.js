@@ -10,7 +10,7 @@ const glossaryCrawler = async function({ headless = true } = {}) {
     GERUND: { key: 'gerund', shortcuts: [ 'прич' ], },
   };
 
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
 
 
   const fetchTranscription = async function(word) {

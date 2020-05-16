@@ -998,3 +998,4 @@ node_modules/yauzl/README.md
 output.xlsx
 node_modules/puppeteer/.local-chromium/win64-737027/chrome-win/Dictionaries/en-US-9-0.bdic
 words-common.txt
+~$output.xlsx
